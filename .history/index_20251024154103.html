@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Minhaj Sir — Fund Collection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{background:#f6fbf7;font-family: "Noto Sans", sans-serif;padding:20px}
+    .card{border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.05)}
+    .small-muted{color:#6c757d;font-size:.9rem}
+    .progress{height:18px;border-radius:10px}
+    @media (max-width:600px){ .desktop-hide{display:none} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="py-3 d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">🕊️ Fund Collection — In Memory of Md. Minhaj Hossain</h3>
+      <div class="small-muted">Live: <span id="liveStatus">connecting...</span></div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-5">
+        <div class="card p-3 mb-3">
+          <h6>নতুন অনুদান দিন</h6>
+          <form id="donationForm">
+            <div class="mb-2"><label class="form-label small-muted">নাম</label><input id="name" class="form-control" placeholder="আপনার নাম" required></div>
+            <div class="mb-2"><label class="form-label small-muted">টাকার পরিমাণ (Tk)</label><input id="amount" type="number" min="1" class="form-control" placeholder="e.g. 500" required></div>
+            <div class="mb-2"><label class="form-label small-muted">TRX নম্বর</label><input id="trx" class="form-control" placeholder="বিকাশ TRX / নিখুঁত আইডি" required></div>
+            <div class="mb-2"><label class="form-label small-muted">মোবাইলের শেষ ৪ ডিজিট</label><input id="last4" maxlength="4" class="form-control" placeholder="2391" required></div>
+            <div class="mb-2"><label class="form-label small-muted">Remarks (ops)</label><input id="remarks" class="form-control" placeholder="bKash / Cash / Nagad"></div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-success" type="submit">Submit</button>
+              <button class="btn btn-outline-secondary" type="button" id="resetBtn">Clear</button>
+            </div>
+            <div id="formMsg" class="mt-2 small-muted"></div>
+          </form>
+        </div>
+
+        <div class="card p-3">
+          <h6>Share / Export</h6>
+          <button id="refreshBtn" class="btn btn-sm btn-outline-primary">Refresh Now</button>
+          <button id="downloadCsv" class="btn btn-sm btn-outline-success">Download CSV</button>
+          <div class="small-muted mt-2">Auto-refresh every 10 sec (can change).</div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div><strong>Live Donors</strong></div>
+            <div class="small-muted">Donors: <span id="donorCount">0</span></div>
+          </div>
+
+          <div class="mt-2 mb-3">
+            <div>Total Collected: <span id="totalCol">0</span> Tk</div>
+            <div class="progress mt-2"><div id="progressBar" class="progress-bar" style="width:0%">0%</div></div>
+          </div>
+
+          <div class="table-responsive" style="max-height:420px; overflow:auto">
+            <table class="table table-sm">
+              <thead><tr><th>Time</th><th>Name</th><th>Amount</th><th>TRX</th><th>Last4</th><th>Remarks</th></tr></thead>
+              <tbody id="donorTbody"></tbody>
+            </table>
+          </div>
+
+          <div class="mt-2 d-flex justify-content-between">
+            <div><button id="printBtn" class="btn btn-outline-secondary btn-sm">Print Results</button></div>
+            <div class="small-muted">Last update: <span id="lastUpdate">-</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const WEB_APP_URL = '<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Minhaj Sir — Fund Collection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{background:#f6fbf7;font-family: "Noto Sans", sans-serif;padding:20px}
+    .card{border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.05)}
+    .small-muted{color:#6c757d;font-size:.9rem}
+    .progress{height:18px;border-radius:10px}
+    @media (max-width:600px){ .desktop-hide{display:none} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="py-3 d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">🕊️ Fund Collection — In Memory of Md. Minhaj Hossain</h3>
+      <div class="small-muted">Live: <span id="liveStatus">connecting...</span></div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-5">
+        <div class="card p-3 mb-3">
+          <h6>নতুন অনুদান দিন</h6>
+          <form id="donationForm">
+            <div class="mb-2"><label class="form-label small-muted">নাম</label><input id="name" class="form-control" placeholder="আপনার নাম" required></div>
+            <div class="mb-2"><label class="form-label small-muted">টাকার পরিমাণ (Tk)</label><input id="amount" type="number" min="1" class="form-control" placeholder="e.g. 500" required></div>
+            <div class="mb-2"><label class="form-label small-muted">TRX নম্বর</label><input id="trx" class="form-control" placeholder="বিকাশ TRX / নিখুঁত আইডি" required></div>
+            <div class="mb-2"><label class="form-label small-muted">মোবাইলের শেষ ৪ ডিজিট</label><input id="last4" maxlength="4" class="form-control" placeholder="2391" required></div>
+            <div class="mb-2"><label class="form-label small-muted">Remarks (ops)</label><input id="remarks" class="form-control" placeholder="bKash / Cash / Nagad"></div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-success" type="submit">Submit</button>
+              <button class="btn btn-outline-secondary" type="button" id="resetBtn">Clear</button>
+            </div>
+            <div id="formMsg" class="mt-2 small-muted"></div>
+          </form>
+        </div>
+
+        <div class="card p-3">
+          <h6>Share / Export</h6>
+          <button id="refreshBtn" class="btn btn-sm btn-outline-primary">Refresh Now</button>
+          <button id="downloadCsv" class="btn btn-sm btn-outline-success">Download CSV</button>
+          <div class="small-muted mt-2">Auto-refresh every 10 sec (can change).</div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div><strong>Live Donors</strong></div>
+            <div class="small-muted">Donors: <span id="donorCount">0</span></div>
+          </div>
+
+          <div class="mt-2 mb-3">
+            <div>Total Collected: <span id="totalCol">0</span> Tk</div>
+            <div class="progress mt-2"><div id="progressBar" class="progress-bar" style="width:0%">0%</div></div>
+          </div>
+
+          <div class="table-responsive" style="max-height:420px; overflow:auto">
+            <table class="table table-sm">
+              <thead><tr><th>Time</th><th>Name</th><th>Amount</th><th>TRX</th><th>Last4</th><th>Remarks</th></tr></thead>
+              <tbody id="donorTbody"></tbody>
+            </table>
+          </div>
+
+          <div class="mt-2 d-flex justify-content-between">
+            <div><button id="printBtn" class="btn btn-outline-secondary btn-sm">Print Results</button></div>
+            <div class="small-muted">Last update: <span id="lastUpdate">-</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwyU7FBO0eGaYqZ1BIyJeu4ge-YCuvxl9k_5bVRyfI9-6I_ivmFCiA5EOH3FWtEmB5oVw/exec';
+const GOAL = 10000;
+
+const form = document.getElementById('donationForm');
+const donorTbody = document.getElementById('donorTbody');
+const totalCol = document.getElementById('totalCol');
+const donorCount = document.getElementById('donorCount');
+const lastUpdate = document.getElementById('lastUpdate');
+const liveStatus = document.getElementById('liveStatus');
+const progressBar = document.getElementById('progressBar');
+
+let dataCache = [];
+
+async function fetchData(){
+  try {
+    liveStatus.textContent = 'fetching...';
+    const res = await fetch(WEB_APP_URL);
+    const obj = await res.json();
+    if(obj && obj.success){
+      dataCache = obj.data || [];
+      renderTable();
+      liveStatus.textContent = 'connected';
+    } else {
+      console.error('API error', obj);
+      liveStatus.textContent = 'error';
+    }
+  } catch(err){
+    console.error('Fetch error', err);
+    liveStatus.textContent = 'offline';
+  }
+}
+
+function renderTable(){
+  donorTbody.innerHTML = '';
+  let total = 0;
+  const rows = dataCache.slice().reverse();
+  rows.forEach(r => {
+    const ts = r.Timestamp ? new Date(r.Timestamp).toLocaleString() : '';
+    const name = r.Name || r.name || '';
+    const amount = Number(r.Amount || r.amount || 0);
+    const trx = r.TRX || r.trx || '';
+    const last4 = r.Last4 || r.last4 || '';
+    const remarks = r.Remarks || r.remarks || '';
+    total += amount;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="white-space:nowrap">${ts}</td>
+                    <td>${escapeHtml(name)}</td>
+                    <td>${amount}</td>
+                    <td>${escapeHtml(trx)}</td>
+                    <td>${escapeHtml(last4)}</td>
+                    <td>${escapeHtml(remarks)}</td>`;
+    donorTbody.appendChild(tr);
+  });
+  totalCol.textContent = total;
+  donorCount.textContent = rows.length;
+  lastUpdate.textContent = new Date().toLocaleString();
+
+  if(GOAL>0){
+    let pct = Math.min(100, Math.round((total/GOAL)*100));
+    progressBar.style.width = pct + '%';
+    progressBar.textContent = pct + '%';
+  } else {
+    progressBar.style.width = '0%';
+    progressBar.textContent = '—';
+  }
+}
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const amount = document.getElementById('amount').value.trim();
+  const trx = document.getElementById('trx').value.trim();
+  const last4 = document.getElementById('last4').value.trim();
+  const remarks = document.getElementById('remarks').value.trim();
+
+  if(!name || !amount || !trx || !last4){
+    alert('সবগুলো ফিল্ড পূরণ করুন');
+    return;
+  }
+
+  try{
+    const payload = {name, amount, trx, last4, remarks};
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const obj = await res.json();
+    if(obj && obj.success){
+      await fetchData();
+      form.reset();
+      alert('ধন্যবাদ — অনুদান রেকর্ড করা হয়েছে।');
+    } else {
+      console.error('post error', obj);
+      alert('Server error। Console দেখো।');
+    }
+  } catch(err){
+    console.error(err);
+    alert('Network error। Console দেখো।');
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>form.reset());
+document.getElementById('refreshBtn').addEventListener('click', fetchData);
+document.getElementById('downloadCsv').addEventListener('click', downloadCsv);
+document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+
+function escapeHtml(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+function downloadCsv(){
+  if(!dataCache.length){ alert('No data'); return; }
+  const header = ['Timestamp','Name','Amount','TRX','Last4','Remarks'];
+  const rows = dataCache.map(r => [r.Timestamp, r.Name, r.Amount, r.TRX, r.Last4, r.Remarks]);
+  const csv = [header, ...rows].map(r=>r.map(c=>`"${String(c||'').replaceAll('"','""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'fund_collection.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+fetchData();
+setInterval(fetchData, 10000);
+</script>
+</body>
+</html>
+';
+const GOAL = 10000;
+
+const form = document.getElementById('donationForm');
+const donorTbody = document.getElementById('donorTbody');
+const totalCol = document.getElementById('totalCol');
+const donorCount = document.getElementById('donorCount');
+const lastUpdate = document.getElementById('lastUpdate');
+const liveStatus = document.getElementById('liveStatus');
+const progressBar = document.getElementById('progressBar');
+
+let dataCache = [];
+
+async function fetchData(){
+  try {
+    liveStatus.textContent = 'fetching...';
+    const res = await fetch(WEB_APP_URL);
+    const obj = await res.json();
+    if(obj && obj.success){
+      dataCache = obj.data || [];
+      renderTable();
+      liveStatus.textContent = 'connected';
+    } else {
+      console.error('API error', obj);
+      liveStatus.textContent = 'error';
+    }
+  } catch(err){
+    console.error('Fetch error', err);
+    liveStatus.textContent = 'offline';
+  }
+}
+
+function renderTable(){
+  donorTbody.innerHTML = '';
+  let total = 0;
+  const rows = dataCache.slice().reverse();
+  rows.forEach(r => {
+    const ts = r.Timestamp ? new Date(r.Timestamp).toLocaleString() : '';
+    const name = r.Name || r.name || '';
+    const amount = Number(r.Amount || r.amount || 0);
+    const trx = r.TRX || r.trx || '';
+    const last4 = r.Last4 || r.last4 || '';
+    const remarks = r.Remarks || r.remarks || '';
+    total += amount;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="white-space:nowrap">${ts}</td>
+                    <td>${escapeHtml(name)}</td>
+                    <td>${amount}</td>
+                    <td>${escapeHtml(trx)}</td>
+                    <td>${escapeHtml(last4)}</td>
+                    <td>${escapeHtml(remarks)}</td>`;
+    donorTbody.appendChild(tr);
+  });
+  totalCol.textContent = total;
+  donorCount.textContent = rows.length;
+  lastUpdate.textContent = new Date().toLocaleString();
+
+  if(GOAL>0){
+    let pct = Math.min(100, Math.round((total/GOAL)*100));
+    progressBar.style.width = pct + '%';
+    progressBar.textContent = pct + '%';
+  } else {
+    progressBar.style.width = '0%';
+    progressBar.textContent = '—';
+  }
+}
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const amount = document.getElementById('amount').value.trim();
+  const trx = document.getElementById('trx').value.trim();
+  const last4 = document.getElementById('last4').value.trim();
+  const remarks = document.getElementById('remarks').value.trim();
+
+  if(!name || !amount || !trx || !last4){
+    alert('সবগুলো ফিল্ড পূরণ করুন');
+    return;
+  }
+
+  try{
+    const payload = {name, amount, trx, last4, remarks};
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const obj = await res.json();
+    if(obj && obj.success){
+      await fetchData();
+      form.reset();
+      alert('ধন্যবাদ — অনুদান রেকর্ড করা হয়েছে।');
+    } else {
+      console.error('post error', obj);
+      alert('Server error। Console দেখো।');
+    }
+  } catch(err){
+    console.error(err);
+    alert('Network error। Console দেখো।');
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>form.reset());
+document.getElementById('refreshBtn').addEventListener('click', fetchData);
+document.getElementById('downloadCsv').addEventListener('click', downloadCsv);
+document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+
+function escapeHtml(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+function downloadCsv(){
+  if(!dataCache.length){ alert('No data'); return; }
+  const header = ['Timestamp','Name','Amount','TRX','Last4','Remarks'];
+  const rows = dataCache.map(r => [r.Timestamp, r.Name, r.Amount, r.TRX, r.Last4, r.Remarks]);
+  const csv = [header, ...rows].map(r=>r.map(c=>`"${String(c||'').replaceAll('"','""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'fund_collection.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+fetchData();
+setInterval(fetchData, 10000);
+</script>
+</body>
+</html>
