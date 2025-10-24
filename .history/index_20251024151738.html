@@ -163,7 +163,7 @@
     // Post as JSON
     try {
       const payload = { name, amount, trx, last4, remarks };
-      const res = await fetch(WEB_APP_URL, {
+      const res = await fetch(, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
